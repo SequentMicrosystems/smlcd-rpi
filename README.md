@@ -1,5 +1,9 @@
+[![smlcd-rpi](pictures/sequent.jpg)](https://www.sequentmicrosystems.com)
+
 # smlcd-rpi
 Drivers for Sequent Microsystems LCD Adapter HAT
+[![smlcd-rpi](pictures/Display.jpg)](https://www.sequentmicrosystems.com)
+
 
 ## Setup
 

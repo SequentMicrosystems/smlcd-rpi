@@ -17,7 +17,7 @@ Go to the *Interface Options* menu then *I2C* and enable the port.
 ~/smlcd-rpi$ sudo make install
 ```
 
-Now you can access all the functions of the relays board through the command "ioplus". Use -h option for help:
+Now you can access all the functions of the LCD board through the command "smlcd". Use -h option for help:
 ```bash
 ~$ smlcd -h
 ```

@@ -1,4 +1,4 @@
-[![smlcd-rpi](../pictures/sequent.jpg)](https://www.sequentmicrosystems.com)
+[![smlcd-rpi](../../pictures/sequent.jpg)](https://www.sequentmicrosystems.com)
 
 # sm-lcd libray documentation
 

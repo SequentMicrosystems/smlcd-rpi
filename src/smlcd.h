@@ -16,13 +16,15 @@
 
 #define LCD_INST_SET_DDR 0x80
 
-
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
 
 #define ERROR	-1
 #define OK		0
 #define FAIL	-1
 #define ARG_CNT_ERR -2
+
+#define RESET_ROTARY_KEY 0xaa
+#define ROTARY_VAL_SIZE_B 2
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -39,16 +41,18 @@ enum
 	I2C_LCD_DATA,
 	I2C_LCD_CMD,
 	I2C_LCD_BL,
+	I2C_LCD_BL_G,
+	I2C_LCD_BL_B,
+	I2C_ROTARY_VAL,
+	I2C_ROTARY_RESET = I2C_ROTARY_VAL + ROTARY_VAL_SIZE_B,
 
 	I2C_MEM_CPU_RESET = 0xaa,
-	I2C_REVISION_HW_MAJOR_MEM_ADD ,
+	I2C_REVISION_HW_MAJOR_MEM_ADD,
 	I2C_REVISION_HW_MINOR_MEM_ADD,
 	I2C_REVISION_MAJOR_MEM_ADD,
 	I2C_REVISION_MINOR_MEM_ADD,
 	SLAVE_BUFF_SIZE = 255
 };
-
-
 
 typedef struct
 {
@@ -61,7 +65,8 @@ typedef struct
 	const char *example;
 } CliCmdType;
 
-enum{
+enum
+{
 	RED = 0,
 	GREEN,
 	BLUE,

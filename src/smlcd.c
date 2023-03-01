@@ -275,7 +275,7 @@ static int doWriteCmd(int argc, char *argv[])
 	if (argc != 3)
 	{
 		return ARG_CNT_ERR;
-		
+
 	}
 	dev = doBoardInit();
 	if (dev <= 0)
@@ -459,7 +459,7 @@ static int doWriteTextAt(int argc, char *argv[])
 	}
 	line = atoi(argv[2]);
 	column = atoi(argv[3]);
-	if(OK != setCursor(dev, line, column))
+	if (OK != setCursor(dev, line, column))
 	{
 		return ERROR;
 	}
@@ -536,7 +536,7 @@ const CliCmdType CMD_WR_BL =
 	&doWriteBacklight,
 	"\tblwr		Set the backlight intensity [0..100]\n",
 	"\tUsage:		smlcd blwr <bl>\n",
-	"",
+	"\tUsage:		smlcd blwr <red> <green> <blue>\n",
 	"\tExample:	smlcd blwr 50 -> Set backlight half intensity\n"};
 
 static int doWriteBacklight(int argc, char *argv[])
@@ -545,7 +545,7 @@ static int doWriteBacklight(int argc, char *argv[])
 	u8 buff[5];
 	int resp = 0;
 
-	if (argc != 3)
+	if (argc != 3 && argc != 5)
 	{
 		return ARG_CNT_ERR;
 	}
@@ -554,6 +554,7 @@ static int doWriteBacklight(int argc, char *argv[])
 	{
 		return ERROR;
 	}
+
 	resp = atoi(argv[2]);
 	if (resp < 0 || resp > 100)
 	{
@@ -561,8 +562,29 @@ static int doWriteBacklight(int argc, char *argv[])
 		return ERROR;
 	}
 	buff[0] = 0xff & resp;
+	if (argc > 3)
+	{
+		resp = atoi(argv[3]);
+		if (resp < 0 || resp > 100)
+		{
+			printf("Invalid backligt intensity value [0..100]\n");
+			return ERROR;
+		}
+		buff[1] = 0xff & resp;
 
-	resp = i2cMem8Write(dev, I2C_LCD_BL, buff, 1);
+		resp = atoi(argv[4]);
+		if (resp < 0 || resp > 100)
+		{
+			printf("Invalid backligt intensity value [0..100]\n");
+			return ERROR;
+		}
+		buff[2] = 0xff & resp;
+		resp = i2cMem8Write(dev, I2C_LCD_BL, buff, 3);
+	}
+	else
+	{
+		resp = i2cMem8Write(dev, I2C_LCD_BL, buff, 1);
+	}
 	if (FAIL == resp)
 	{
 		printf("Fail to write!\n");
@@ -570,8 +592,6 @@ static int doWriteBacklight(int argc, char *argv[])
 	}
 	return OK;
 }
-
-
 
 static int doReadButton(int argc, char *argv[]);
 const CliCmdType CMD_READ_BUTTON =
@@ -695,6 +715,84 @@ static int doReadButtonInt(int argc, char *argv[])
 	return OK;
 }
 
+static int doReadRotary(int argc, char *argv[]);
+const CliCmdType CMD_READ_ROTARY =
+{
+	"rotrd",
+	1,
+	&doReadRotary,
+	"\trotrd		Read rotary value\n",
+	"\tUsage:		smlcd rotrd \n",
+	"",
+	"\tExample:	smlcd rotrd -> Read rotary value\n"};
+
+static int doReadRotary(int argc, char *argv[])
+{
+	int dev = -1;
+	u8 buff[2];
+	int resp = 0;
+	int16_t val = 0;
+	UNUSED(argv);
+
+	if (argc != 2)
+	{
+		return ARG_CNT_ERR;
+	}
+	dev = doBoardInit();
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	resp = i2cMem8Read(dev, I2C_ROTARY_VAL, buff, 2);
+	if (FAIL == resp)
+	{
+		printf("Fail to read!\n");
+		return ERROR;
+	}
+	memcpy(&val, buff, 2);
+	printf("%d\n", val);
+	return OK;
+}
+
+static int doResetRotary(int argc, char *argv[]);
+const CliCmdType CMD_RST_ROTARY =
+{
+	"rotrst",
+	1,
+	&doResetRotary,
+	"\trotrst		Reset rotary value\n",
+	"\tUsage:		smlcd rotrst \n",
+	"",
+	"\tExample:	smlcd rotrst -> Reset rotary value\n"};
+
+static int doResetRotary(int argc, char *argv[])
+{
+	int dev = -1;
+	u8 buff[2];
+	int resp = 0;
+	
+	UNUSED(argv);
+
+	if (argc != 2)
+	{
+		return ARG_CNT_ERR;
+	}
+	dev = doBoardInit();
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	buff[0] = RESET_ROTARY_KEY;
+	resp = i2cMem8Write(dev, I2C_ROTARY_RESET, buff, 1);
+	if (FAIL == resp)
+	{
+		printf("Fail to write!\n");
+		return ERROR;
+	}
+	return OK;
+}
+
+
 const CliCmdType *gCmdArray[] =
 {
 	&CMD_VERSION,
@@ -710,6 +808,8 @@ const CliCmdType *gCmdArray[] =
 	&CMD_WR_BL,
 	&CMD_READ_BUTTON,
 	&CMD_READ_BUTTON_INT,
+	&CMD_READ_ROTARY,
+	&CMD_RST_ROTARY,
 	NULL}; //null terminated array of cli structure pointers
 
 int main(int argc, char *argv[])
@@ -731,7 +831,9 @@ int main(int argc, char *argv[])
 				ret = gCmdArray[i]->pFunc(argc, argv);
 				if (ARG_CNT_ERR == ret)
 				{
-					printf("Invalid arguments number, type \"smlcd -h %s\" for details\n", gCmdArray[i]->name);
+					printf(
+						"Invalid arguments number, type \"smlcd -h %s\" for details\n",
+						gCmdArray[i]->name);
 				}
 				return ret;
 			}

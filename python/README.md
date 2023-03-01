@@ -47,4 +47,4 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 More usage example in the [examples](examples/) folder
 
-[## Functions prototypes](sm_lcd/README.md)
+## [Functions prototypes](sm_lcd/README.md)

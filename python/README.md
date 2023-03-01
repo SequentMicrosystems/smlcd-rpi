@@ -13,8 +13,10 @@ This is the python library to control the [Six-in-one LCD Adapter Kit Using 2004
 ~$ cd smlcd-rpi/python/sm_lcd/
 ~/smlcd-rpi/python/sm_lcd$ sudo python setup.py install
 ```
-If you use python3.x repace the last line with:
+If you use python3.x repace the second and the last lines with:
 ```
+~$ sudo apt-get install build-essential python3-pip python3-dev python3-smbus2
+
 ~/smlcd-rpi/python/sm_lcd$ sudo python3 setup.py install
 ```
 ## Update

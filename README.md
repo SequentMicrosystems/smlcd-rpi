@@ -36,3 +36,5 @@ If you clone the repository any update can be made with the following commands:
 ## [Command line description](https://github.com/SequentMicrosystems/smlcd-rpi/wiki/Sequent-Microsystems-LCD-Adapter-HAT-command-line-Documentation)
 
 ## [Firmware Update](https://github.com/SequentMicrosystems/smlcd-rpi/blob/main/update/README.md)
+
+## [Python](python/README.md)

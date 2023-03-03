@@ -38,3 +38,5 @@ If you clone the repository any update can be made with the following commands:
 ## [Firmware Update](update/README.md)
 
 ## [Python](python/README.md)
+
+## [Sprinklers Node-RED](https://github.com/SequentMicrosystems/smlcd-rpi/blob/main/node-red_examples/sprinklers/README.md)
